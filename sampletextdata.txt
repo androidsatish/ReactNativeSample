@@ -1,0 +1,106 @@
+<View style={styles.cardView}>
+<Text style={styles.cardTitle}>Match 1
+<Text style={{fontSize:15,fontWeight:'normal',}}>        Group {groupName}</Text>
+</Text>
+<View style={{flex: 1,flexDirection: 'column',padding:15}}>
+  <View style={{flex:1, flexDirection:'row',alignItems:'center'}}>
+<Image source={op1Image} style={styles.imageMatchCard}/>
+<View style={{flex:1, flexDirection:'column'}}>
+<Text style={styles.cardText}>{op1Title}</Text>
+<Text style={styles.cardTextInfo}>Vs</Text>
+<Text style={styles.cardText}>{op2Title}</Text>
+</View>
+<Image source={op2Image} style={styles.imageMatchCard}/>
+</View>
+<Text style={styles.cardTextInfo}>Date : 12 Jan 2019</Text>
+<Text style={styles.cardTextInfo}>Venue : Wankhede Stadium, Mumbai</Text>
+</View>
+</View>
+
+// updated on 26 Feb 2018
+
+
+
+
+
+
+
+<View style={styles.cardView}>
+<Text style={styles.cardTitle}>Match 1
+<Text style={{fontSize:15,fontWeight:'normal',}}>        Group A</Text>
+</Text>
+<View style={{flex: 1,flexDirection: 'column',padding:15}}>
+  <View style={{flex:1, flexDirection:'row',alignItems:'center'}}>
+<Image source={data1[0].image} style={styles.imageMatchCard}/>
+<View style={{flex:1, flexDirection:'column'}}>
+<Text style={styles.cardText}>{data1[0].title}</Text>
+<Text style={styles.cardTextInfo}>Vs</Text>
+<Text style={styles.cardText}>{data1[1].title}</Text>
+</View>
+<Image source={data1[1].image} style={styles.imageMatchCard}/>
+</View>
+<Text style={styles.cardTextInfo}>Date : 12 Jan 2019</Text>
+<Text style={styles.cardTextInfo}>Venue : Wankhede Stadium, Mumbai</Text>
+</View>
+</View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// match card
+
+<View style={styles.cardView}>
+<Text style={styles.cardTitle}>Match 1
+<Text style={{fontSize:15,fontWeight:'normal',}}>        Group A</Text>
+</Text>
+<View style={{flex: 1,flexDirection: 'column',padding:15}}>
+<View style={{flex:1, flexDirection:'row',alignItems:'center'}}>
+<Image source={data1[0].image} style={styles.imageMatchCard}/>
+<View style={{flex:1, flexDirection:'column'}}>
+<Text style={styles.cardText}>{data1[0].title}</Text>
+<Text style={styles.cardTextInfo}>Vs</Text>
+<Text style={styles.cardText}>{data1[1].title}</Text>
+</View>
+<Image source={data1[1].image} style={styles.imageMatchCard}/>
+</View>
+<Text style={styles.cardTextInfo}>Date : 12 Jan 2019</Text>
+<Text style={styles.cardTextInfo}>Venue : Wankhede Stadium, Mumbai</Text>
+</View>
+</View>
+
+
+// row groups
+
+<View style={styles.container}>
+<Image source={props.image} style={{width: 30, height: 20}}/>
+<Text style={styles.item}>{props.title}</Text>
+</View>
+
+// <FlatList
+//   data={[
+//     {key:'India'},
+//     {key:'South Africa'},
+//     {key:'England'},
+//     {key:'Bangladesh'},
+//   ]}
+// renderItem = {({item}) => <Text style={styles.item}>{item.key}</Text>}
+//  />
+
+//       <ListView
+//                style={{flex:1}} //Don't forget this too
+//                dataSource={this.state.dataSource1}
+//                renderRow={(data) => <Row {...data} />}
+//              />
