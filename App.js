@@ -1,353 +1,23 @@
 import React, { Component } from 'react';
 import {
   Platform,StyleSheet,Text,FlatList,ScrollView,Image,ListView,Button,TouchableWithoutFeedback,
-  TouchableNativeFeedback,View,ActivityIndicator,DrawerLayoutAndroid,ImageBackground,} from 'react-native';
+  TouchableNativeFeedback,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
+  DrawerLayoutAndroid,ImageBackground,TextInput,} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import RowTeam from './src/RowTeam';
 import RowMatch from './src/RowMatch';
+import ActionButton from './src/ActionButton';
 import Toast from 'react-native-toast-native';
 
-const imgIND = require('./img/india.png')
-const imgSA = require('./img/southafrica.png')
-const imgENG = require('./img/england.png')
-const imgBAN = require('./img/bangladesh.png')
-const imgAUS = require('./img/australia.png')
-const imgNZ = require('./img/zealand.png')
-const imgSL = require('./img/sri-lanka.png')
-const imgPAK = require('./img/pakistan.png')
-const imgAFG = require('./img/afghanistan.png')
-const imgKEN = require('./img/kenya.png')
-const imgNED = require('./img/netherlands.png')
-const imgHNK = require('./img/hongkong.png')
-const imgUAE = require('./img/united-arab-emirates.png')
-const imgUSA = require('./img/usa.png')
-const imgJPN = require('./img/japan.png')
-const imgCHA = require('./img/china.png')
+var data1 = []
 
-var data1 = [{title:"India",image:imgIND},{title:"South Africa",image:imgSA},
-{title:"England",image:imgENG},{title:"Bangladesh",image:imgBAN}]
+var data2 = []
 
-var data2 = [{title:"Australia",image:imgAUS},{title:"NewZeland",image:imgNZ},
-{title:"Sri-Lanka",image:imgSL},{title:"Pakistan",image:imgPAK}]
+var data3 = []
 
-var data3 = [{title:"Afghanistan",image:imgAFG},{title:"Kenya",image:imgKEN},
-{title:"Netherlands",image:imgNED},{title:"Hongkong",image:imgHNK}]
-
-var data4 = [{title:"UAE",image:imgUAE},{title:"USA",image:imgUSA},
-{title:"Japan",image:imgJPN},{title:"China",image:imgCHA}]
-
-var grpA = [
-  {
-    grpName: "A",
-    matchNumber: 1,
-    team1 : data1[0].title,
-    team2 : data1[1].title,
-    date : '12 May 2018  1.30 PM',
-    venue : 'Wankhede Stadium, Mumbai',
-    team1Icon : data1[0].image,
-    team2Icon : data1[1].image,
-  },
-  {
-    grpName: "A",
-    matchNumber: 2,
-    team1 : data1[2].title,
-    team2 : data1[3].title,
-    date : '13 May 2018 1.30 PM',
-    venue : 'Feroz Shah Kotla Stadium, Delhi',
-    team1Icon : data1[2].image,
-    team2Icon : data1[3].image,
-  },
-  {
-    grpName: "A",
-    matchNumber: 9,
-    team1 : data1[0].title,
-    team2 : data1[2].title,
-    date : '20 May 2018 4.30 PM',
-    venue : 'Wankhede Stadium, Mumbai',
-    team1Icon : data1[0].image,
-    team2Icon : data1[2].image,
-  },
-  {
-    grpName: "A",
-    matchNumber: 10,
-    team1 : data1[1].title,
-    team2 : data1[3].title,
-    date : '21 May 2018 4.30 PM',
-    venue : 'Feroz Shah Kotla Stadium, Delhi',
-    team1Icon : data1[1].image,
-    team2Icon : data1[3].image,
-  },
-]
-
-var grpB = [
-{
-  grpName: "B",
-  matchNumber: 3,
-  team1 : data2[0].title,
-  team2 : data2[1].title,
-  date : '14 May 2018 4.30 PM',
-  venue : 'Eden Gardens, Kolkata',
-  team1Icon : data2[0].image,
-  team2Icon : data2[1].image,
-},
-{
-  grpName: "B",
-  matchNumber: 4,
-  team1 : data2[2].title,
-  team2 : data2[3].title,
-  date : '15 May 2018 1.30 PM',
-  venue : 'Jawaharlal Nehru Stadium, Chennai',
-  team1Icon : data2[2].image,
-  team2Icon : data2[3].image,
-},
-{
-  grpName: "B",
-  matchNumber: 11,
-  team1 : data2[0].title,
-  team2 : data2[3].title,
-  date : '22 May 2018 4.30 PM',
-  venue : 'M.Chinnaswamy Stadium, Bangalore',
-  team1Icon : data2[0].image,
-  team2Icon : data2[3].image,
-},
-{
-  grpName: "B",
-  matchNumber: 12,
-  team1 : data2[1].title,
-  team2 : data2[3].title,
-  date : '23 May 2018 1.30 PM',
-  venue : 'Jawaharlal Nehru Stadium, Chennai',
-  team1Icon : data2[1].image,
-  team2Icon : data2[3].image,
-},
-]
-
-var grpC = [
-{
-  grpName: "C",
-  matchNumber: 5,
-  team1 : data3[0].title,
-  team2 : data3[1].title,
-  date : '16 May 2018 4.30 PM',
-  venue : 'Subrata Roy Sahara Stadium, Pune',
-  team1Icon : data3[0].image,
-  team2Icon : data3[1].image,
-},
-{
-  grpName: "C",
-  matchNumber: 6,
-  team1 : data3[2].title,
-  team2 : data3[3].title,
-  date : '17 May 2018 1.30 PM',
-  venue : 'Rajiv Gandhi International Cricket Stadium, Hyderabad',
-  team1Icon : data3[2].image,
-  team2Icon : data3[3].image,
-},
-{
-  grpName: "C",
-  matchNumber: 13,
-  team1 : data3[0].title,
-  team2 : data3[2].title,
-  date : '24 May 2018 4.30 PM',
-  venue : 'Subrata Roy Sahara Stadium, Pune',
-  team1Icon : data3[0].image,
-  team2Icon : data3[2].image,
-},
-{
-  grpName: "C",
-  matchNumber: 14,
-  team1 : data3[1].title,
-  team2 : data3[3].title,
-  date : '25 May 2018 1.30 PM',
-  venue : 'Rajiv Gandhi International Cricket Stadium, Hyderabad',
-  team1Icon : data3[1].image,
-  team2Icon : data3[3].image,
-},
-]
-
-var grpD = [
-{
-  grpName: "D",
-  matchNumber: 7,
-  team1 : data4[0].title,
-  team2 : data4[1].title,
-  date : '18 May 2018 1.30 PM',
-  venue : 'Holkar Stadium, Indore',
-  team1Icon : data4[0].image,
-  team2Icon : data4[1].image,
-},
-{
-  grpName: "D",
-  matchNumber: 8,
-  team1 : data4[2].title,
-  team2 : data4[3].title,
-  date : '19 May 2018 1.30 PM',
-  venue : 'Moti Bagh Stadium, Vadodara',
-  team1Icon : data4[2].image,
-  team2Icon : data4[3].image,
-},
-{
-  grpName: "D",
-  matchNumber: 15,
-  team1 : data4[0].title,
-  team2 : data4[2].title,
-  date : '26 May 2018 1.30 PM',
-  venue : 'Holkar Stadium, Indore',
-  team1Icon : data4[0].image,
-  team2Icon : data4[2].image,
-},
-{
-  grpName: "D",
-  matchNumber: 16,
-  team1 : data4[1].title,
-  team2 : data4[3].title,
-  date : '27 May 2018 4.30 PM',
-  venue : 'Moti Bagh Stadium, Vadodara',
-  team1Icon : data4[1].image,
-  team2Icon : data4[3].image,
-},
-]
-
-var allMatches = grpA.concat(grpB,grpC,grpD);
-allMatches.sort(function(a,b){
-  return a.matchNumber - b.matchNumber;
-});
-
-const defaultHitSlop = { top: 15, bottom: 15, right: 15, left: 15 };
-
-class LogoTitle extends React.Component {
-  render(){
-    return(
-
-      <View style={styles.titleBar}>
-      <Image source={require('./img/cricket.png')}style={{width: 40, height: 40}}/>
-      <Text style={styles.title}>ICC World Cup 2019 Teams</Text>
-      <Image source={require('./img/icc_logo.png')}style={{width: 40, height: 40}}/>
-      </View>
-
-    );
-  }
-}
-
-class HomeScreen extends React.Component{
-  static navigationOptions = {
-//    title: 'Home',
-headerTitle: <LogoTitle />,
-  };
-  constructor(props){
-    super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-       this.state = {
-         dataSource1: ds.cloneWithRows(data1),
-         dataSource2: ds.cloneWithRows(data2),
-         dataSource3: ds.cloneWithRows(data3),
-         dataSource4: ds.cloneWithRows(data4),
-       };
-  }
-  render(){
-
-return(
-  <View style={styles.rootContainer}>
-  <ScrollView>
-        <View style={styles.container}>
-        <View style={styles.groupContainer}>
-      <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
-        groupId:1,
-        groupName:'A',
-        matches: grpA,
-      });
-    }}>
-        <View style={styles.groups} >
-        <Text style={styles.header}>Group 'A'</Text>
-        <ListView
-        style={{flex:1}}
-        dataSource={this.state.dataSource1}
-        renderRow={(data) => <Row {...data} />}
-                      />
-  </View>
-</TouchableWithoutFeedback>
-
-<TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
-  groupId:2,
-  groupName:'B',
-  matches: grpB,
-
-});
-}}>
-  <View style={styles.groups}>
-  <Text style={styles.header}>Group 'B'</Text>
-  <ListView style={{flex:1}}
-  dataSource={this.state.dataSource2}
-  renderRow={(data) => <Row {...data} />}
-                />
-    </View>
-    </TouchableWithoutFeedback>
-    </View>
-
-    <View style={styles.groupContainer}>
-    <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
-      groupId:3,
-      groupName:'C',
-      matches: grpC,
-
-    });
-    }}>
-    <View style={styles.groups}>
-    <Text style={styles.header}>Group 'C'</Text>
-    <ListView
-    style={{flex:1}}
-    dataSource={this.state.dataSource3}
-    renderRow={(data) => <Row {...data} />}
-                  />
-  </View>
-  </TouchableWithoutFeedback>
-
-  <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
-    groupId:4,
-    groupName:'D',
-    matches: grpD,
-
-  });
-  }}>
-  <View style={styles.groups}>
-  <Text style={styles.header}>Group 'D'</Text>
-  <ListView
-  style={{flex:1}}
-  dataSource={this.state.dataSource4}
-  renderRow={(data) => <Row {...data} />}
-                />
-  </View>
-  </TouchableWithoutFeedback>
-
-  </View>
-
-<View style={styles.buttonContainer}>
-<TouchableNativeFeedback
-  onPress={() => {this.props.navigation.navigate('Matches',{
-    groupId:0,
-    groupName:'All',
-    matches: allMatches,
-
-  });
-}}
-  background = {TouchableNativeFeedback.Ripple('white',false)}
-  hitSlop = {defaultHitSlop}
-  >
-  <View style={styles.button}>
-<Text style={styles.text}> Go to Matches</Text>
-  </View>
-  </TouchableNativeFeedback>
-</View>
-
-
-</View>
-</ScrollView>
-</View>
-
-);
-
-  }
-}
+var data4 = []
+var matches = []
+var matchesUrl;
 
 const toastStyle = {
   borderRadius:15,
@@ -358,21 +28,510 @@ const toastStyle = {
   lines: 4,
 }
 
+const DATA_KEY = 'storage123'
 var message = 'Welcome to Toast Native ...!'
 var grpId,grpName
+var matchId = 0;
+const defaultHitSlop = { top: 15, bottom: 15, right: 15, left: 15 };
 
-class GroupMatches extends React.Component {
+class LogoTitle extends React.Component {
+  render(){
+    return(
+
+      <View style={styles.titleBar}>
+      <Image source={require('./img/cricket.png')}style={{width: 30, height: 30}}/>
+      <Text style={styles.title}>ICC World Cup 2019</Text>
+      <Image source={require('./img/icc_logo.png')}style={{width: 30, height: 30}}/>
+      </View>
+
+    );
+  }
+}
+
+class Login extends React.Component {
+
   static navigationOptions = {
-    title: 'Matches',
-    headerRight :(
-      <Button
-      onPress ={() => Toast.show(message,Toast.SHORT,Toast.BOTTOM,toastStyle)}
-      title = "Info"
-      color = "steelblue"
-      />
-    ),
-
+    title: 'Login',
   };
+  constructor(props){
+    super(props);
+    this.state ={ email: '',password:''};
+    this.focusNextField = this.focusNextField.bind(this);
+    this.inputs = {};
+  }
+  makeRequest(){
+    fetch('http://10.0.1.125:8082/login', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json','Content-Type': 'application/json',},
+      body: JSON.stringify({ email: this.state.email, password: this.state.password})
+    }).then((response) => response.json())
+    .then((responseData) => {
+      console.log("responseData : " +responseData.status);
+      if (responseData.status) {
+
+        AsyncStorage.setItem(DATA_KEY,JSON.stringify(responseData.data[0]), (err) =>{
+          if (err) {
+            console.log("Error storing data "+err);
+          }else {
+            console.log("data stored ");
+            }
+
+        });
+
+        Alert.alert("Success !","Login successfull for "+this.state.email,[
+          {text :'Go To Home',onPress: () =>this.props.navigation.navigate('Home',{
+            userId:responseData.data[0]["userId"],
+            firstName:responseData.data[0]["firstName"],
+            lastName: responseData.data[0]["lastName"],
+          }),
+        },
+        {text :'Cancel',onPress : () =>console.log("Cancel Clicked"),style :'cancel'},
+      ],
+      {cancelable: false}
+    );
+
+    console.log("responseData : " +responseData.data[0]["userId"]);
+    console.log("responseData : " +responseData.data[0]["firstName"]);
+    console.log("responseData : " +responseData.data[0]["lastName"]);
+  }
+  else
+   {
+     Alert.alert("Failed !",responseData.msg);
+     console.log("responseData : " +responseData.msg);
+   }
+ })
+ .catch((error) => {
+   console.log("error : " +error);
+ });
+  }
+  focusNextField(id){
+    this.inputs[id].focus();
+  }
+  componentDidMount(){
+    AsyncStorage.getItem(DATA_KEY,(err,result) =>{
+          if (err) {
+            console.log("Error retrieving data "+err);
+          }else {
+            console.log("Stored Data : "+result);
+            var data = JSON.parse(result);
+            if (data === null || data.userId === null) {
+                  console.log("Stored No Data ");
+            }else {
+
+            if (data.userId > 0) {
+              this.props.navigation.navigate('Home',{
+                userId:data.userId,
+                firstName:data.firstName,
+                lastName: data.lastName,
+              });
+            }
+          }
+        }
+    });
+
+  }
+  render(){
+    return(
+      <View style = {styles.rootContainer}>
+      <ScrollView>
+      <View style ={{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {false}
+      onSubmitEditing = {() =>{this.focusNextField("password");}}
+      ref = {input => {this.inputs['email'] = input;}}
+      placeholder = "Email" keyboardType = "email-address" returnKeyType= "next"
+      onChangeText = {(email) => this.setState({email})}/>
+      </View>
+
+      <View style = {{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {true}
+      onSubmitEditing = {() =>{this.makeRequest();}}
+      ref = {input => {this.inputs['password'] = input;}}
+      placeholder = "Password" returnKeyType= "done" keyboardType = "visible-password"
+      onChangeText = {(password) => this.setState({password})}/>
+      </View>
+
+
+      <View style={styles.buttonContainer}>
+      <TouchableNativeFeedback
+        background = {TouchableNativeFeedback.Ripple('white',false)}
+        hitSlop = {defaultHitSlop}
+        onPress = {() => this.makeRequest()}
+        >
+        <View style={styles.button}>
+      <Text style={styles.text}>Sign In</Text>
+        </View>
+        </TouchableNativeFeedback>
+      </View>
+
+      <Text style={{textAlign:'center',padding:0,color:'black',fontSize:18}}>OR</Text>
+
+      <View style={styles.buttonContainer}>
+      <TouchableNativeFeedback
+        background = {TouchableNativeFeedback.Ripple('white',false)}
+        hitSlop = {defaultHitSlop}
+        onPress = {() => this.props.navigation.navigate('SignUp')}
+        >
+        <View style={styles.button}>
+      <Text style={styles.text}>Not a User ? Sign Up</Text>
+        </View>
+        </TouchableNativeFeedback>
+      </View>
+
+      </ScrollView>
+      </View>
+    );
+  }
+}
+
+class SignUp extends React.Component {
+  static navigationOptions = {
+    title: 'SignUp',
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstName : '',
+      lastName : '',
+      email : '',
+      password : '',
+    };
+
+    this.focusNextField = this.focusNextField.bind(this);
+    this.inputs = {};
+  }
+  focusNextField(id) {
+     this.inputs[id].focus();
+   }
+
+  makeSignUpRequest(){
+    fetch('http://10.0.1.125:8082/signup',{
+      method : 'POST',
+      headers : {'Accept':'application/json','Content-Type':'application/json'},
+      body : JSON.stringify({
+        firstName : this.state.firstName,
+        lastName : this.state.lastName,
+        email : this.state.email,
+        password : this.state.password,
+      })
+    }).then((response) => response.json())
+    .then((responseData) => {
+      console.log("Response Data Sign Up : "+responseData.status);
+
+      if (responseData.status) {
+        Alert.alert("Success !",responseData.msg, [
+          {text : "Go Login",onPress : () => this.props.navigation.navigate('Login')},
+          {text : 'Cancel',onPress : () => console.log("Cancel"),style:'cancel' },
+        ],
+        {cancelable : false}
+      );
+      }else {
+        console.log("Response data : "+responseData.msg);
+        Alert.alert("Failed !",responseData.msg);
+      }
+
+    }).catch((error) =>{
+      console.log("SignUp Error : "+error);
+    });
+
+  }
+
+  render(){
+    return(
+      <View style = {styles.rootContainer}>
+      <ScrollView>
+      <View style = {{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {false}
+      onSubmitEditing = {() =>{this.focusNextField("lastName");}}
+      ref = {input => {this.inputs['firstName'] = input;}}
+      placeholder="First Name" returnKeyType = "next"
+      onChangeText = {(firstName) => this.setState({firstName})}  />
+      </View>
+
+      <View style = {{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {false}
+      onSubmitEditing = {() =>{this.focusNextField("email");}}
+      ref = {input => {this.inputs['lastName'] = input;}}
+      placeholder="Last Name" returnKeyType = "next"
+      onChangeText = {(lastName) => this.setState({lastName})}  />
+      </View>
+
+      <View style = {{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {false}
+      onSubmitEditing = {() =>{this.focusNextField("password");}}
+      ref = {input => {this.inputs['email'] = input;}}
+      placeholder="Email" returnKeyType = "next" keyboardType = "email-address"
+      onChangeText = {(email) => this.setState({email})}  />
+      </View>
+
+      <View style = {{padding:10,marginTop:20,}}>
+      <TextInput style = {{padding:5,height:45,}}
+      blurOnSubmit = {true}
+      onSubmitEditing = {() =>{this.makeSignUpRequest()}}
+      ref = {input => {this.inputs['password'] = input;}}
+      placeholder="Password" returnKeyType = "done"
+      onChangeText = {(password) => this.setState({password})}  />
+      </View>
+
+      <View style = {styles.buttonContainer}>
+      <TouchableNativeFeedback background = {TouchableNativeFeedback.Ripple('white',false)}
+      hitSlop = {defaultHitSlop}
+      onPress = {() => this.makeSignUpRequest()} >
+      <View style = {styles.button}>
+      <Text style = {styles.text}>Sign Up</Text>
+      </View>
+      </TouchableNativeFeedback>
+      </View>
+
+      </ScrollView>
+      </View>
+
+
+
+    );
+  }
+
+}
+
+class HomeScreen extends React.Component{
+  static navigationOptions = {
+    headerTitle: <LogoTitle />,
+  };
+  constructor(props){
+    super(props);
+
+    const { params } = this.props.navigation.state;
+    const userId = params ? params.userId : null;
+    const firstName = params ? params.firstName : null;
+    const lastName = params ? params.lastName : null;
+
+    console.log("User logged in "+userId+" "+firstName+" "+lastName);
+
+  const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+  this.state = {
+    isLoading : true,
+    dataSource1: ds.cloneWithRows(data1),
+    dataSource2: ds.cloneWithRows(data2),
+    dataSource3: ds.cloneWithRows(data3),
+    dataSource4: ds.cloneWithRows(data4),
+  };
+
+  }
+
+  loadData() {
+   console.log("Load data called after Component mounted !");
+
+   fetch('http://10.0.1.125:8082/getAllTeams',{
+     method :'GET',
+     headers :{'Content-Type':'application/json', },
+   }).then((response) => response.json())
+   .then((responseData) =>{
+     console.log("Response  :"+responseData.status);
+     console.log("Total Teams  :"+responseData.data.length);
+
+     for (var i = 0; i < responseData.data.length; i++) {
+       if (responseData.data[i]["groupId"] === 1) {
+      //   console.log("Group A : "+responseData.data[i]["teamName"]);
+         data1.push(responseData.data[i]);
+       }else if (responseData.data[i]["groupId"] === 2) {
+      //   console.log("Group B : "+responseData.data[i]["teamName"]);
+         data2.push(responseData.data[i]);
+       }else if (responseData.data[i]["groupId"] === 3) {
+      //   console.log("Group C : "+responseData.data[i]["teamName"]);
+         data3.push(responseData.data[i]);
+       }else if (responseData.data[i]["groupId"] === 4) {
+    //     console.log("Group D : "+responseData.data[i]["teamName"]);
+         data4.push(responseData.data[i]);
+       }
+     }
+
+     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+     this.setState({
+       isLoading: false,
+       dataSource1 : ds.cloneWithRows(data1),
+       dataSource2 : ds.cloneWithRows(data2),
+       dataSource3 : ds.cloneWithRows(data3),
+       dataSource4 : ds.cloneWithRows(data4),
+     });
+
+   }).catch((error) => {
+     console.log("Error :"+error);
+   });
+
+ }
+
+ componentDidMount(){
+   this.loadData();
+ }
+
+ componentWillUnmount(){
+   data1 = [];
+   data2 = [];
+   data3 = [];
+   data4 = [];
+ }
+
+  render(){
+
+    if (this.state.isLoading) {
+     return (
+       <View style={{flex: 1, paddingTop: 20}}>
+         <ActivityIndicator />
+       </View>
+     );
+   }
+   return(
+     <View style={styles.rootContainer}>
+     <ScrollView>
+        <View style={styles.container}>
+        <View style={styles.groupContainer}>
+      <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
+        groupId:1,
+        groupName:'A',
+      });
+    }}>
+        <View style={styles.groups} >
+        <Text style={styles.header}>Group 'A'</Text>
+        <ListView
+        style={{flex:1}}
+        dataSource={this.state.dataSource1}
+        renderRow={(data) => <RowTeam {...data} />}
+                      />
+                      </View>
+                      </TouchableWithoutFeedback>
+
+                      <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
+                        groupId:2,
+                        groupName:'B',
+                      });
+                    }}>
+
+                    <View style={styles.groups}>
+                    <Text style={styles.header}>Group 'B'</Text>
+                    <ListView style={{flex:1}}
+                    dataSource={this.state.dataSource2}
+                    renderRow={(data) => <RowTeam {...data} />}
+                    />
+                    </View>
+                    </TouchableWithoutFeedback>
+                    </View>
+
+                    <View style={styles.groupContainer}>
+                    <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
+                      groupId:3,
+                      groupName:'C',
+                    });
+                  }}>
+
+                  <View style={styles.groups}>
+                  <Text style={styles.header}>Group 'C'</Text>
+                  <ListView
+                  style={{flex:1}}
+                  dataSource={this.state.dataSource3}
+                  renderRow={(data) => <RowTeam {...data} />}
+                  />
+                  </View>
+                  </TouchableWithoutFeedback>
+
+                  <TouchableWithoutFeedback onPress={() => {this.props.navigation.navigate('Matches',{
+                    groupId:4,
+                    groupName:'D',
+                  });
+                }}>
+
+                <View style={styles.groups}>
+                <Text style={styles.header}>Group 'D'</Text>
+                <ListView
+                style={{flex:1}}
+                dataSource={this.state.dataSource4}
+                renderRow={(data) => <RowTeam {...data} />}
+                />
+                </View>
+                </TouchableWithoutFeedback>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                <TouchableNativeFeedback
+                onPress={() => {this.props.navigation.navigate('Matches',{
+                  groupId:0,
+                  groupName:'All',
+                });
+              }}
+              background = {TouchableNativeFeedback.Ripple('white',false)}
+              hitSlop = {defaultHitSlop}>
+              <View style={styles.button}>
+              <Text style={styles.text}> Go to Matches</Text>
+              </View>
+              </TouchableNativeFeedback>
+              </View>
+
+              <View style={styles.buttonContainer}>
+              <TouchableNativeFeedback
+              onPress={() => {this.props.navigation.navigate('Points');
+            }}
+            background = {TouchableNativeFeedback.Ripple('white',false)}
+            hitSlop = {defaultHitSlop}>
+            <View style={styles.button}>
+            <Text style={styles.text}> See Points Table</Text>
+            </View>
+            </TouchableNativeFeedback>
+            </View>
+
+              </View>
+              </ScrollView>
+              </View>
+
+            );
+          }
+        }
+var take
+class GroupMatches extends React.Component {
+
+  static navigationOptions = ({navigation}) => {
+    return{
+      title: 'Matches',
+      headerRight :(
+        <View style={{flexDirection:'row'}}>
+        <TouchableNativeFeedback
+        onPress={()=> {take.showDatePicker()}}
+      background = {TouchableNativeFeedback.Ripple('white',false)}
+      hitSlop = {defaultHitSlop}>
+      <View style={styles.actionButton}>
+      <Text style={styles.actionText}> Date </Text>
+      </View>
+      </TouchableNativeFeedback>
+      <TouchableNativeFeedback
+      onPress={()=> {take.showDatePicker()}}
+    background = {TouchableNativeFeedback.Ripple('white',false)}
+    hitSlop = {defaultHitSlop}>
+    <View style={styles.actionButton}>
+    <Text style={styles.actionText}> Time </Text>
+    </View>
+    </TouchableNativeFeedback>
+    </View>
+      ),
+    };
+  };
+  async showDatePicker(){
+    try {
+      DatePickerAndroid.open({
+        date: new Date()
+      }).then(function (date){
+        console.log(date.action);
+        if (date.action !== DatePickerAndroid.dismissedAction) {
+          var newDate = new Date(date.year, date.month, date.day);
+          console.log('selected date is: ', newDate);
+        }
+      });
+    } catch ({code, message}) {
+      console.warn('Cannot open date picker', message);
+    }
+  }
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -390,35 +549,84 @@ class GroupMatches extends React.Component {
     const { params } = this.props.navigation.state;
     const groupId = params ? params.groupId : null;
     const groupName = params ? params.groupName : null;
-    const matches = params ? params.matches : row;
+
+    this.showDatePicker = this.showDatePicker.bind(this);
+
     this.state = {
-      dataSource : ds.cloneWithRows(matches),
+      isLoading : true,
+      dataSource : ds.cloneWithRows(row),
     };
 
     grpId = groupId;
     grpName = groupName;
 
+    if (grpId === 0) {
+      matchesUrl = 'http://10.0.1.125:8082/getAllMatches';
+    }else {
+      matchesUrl = 'http://10.0.1.125:8082/getAllMatches?grp='+grpId;
+    }
+
   }
-render()
-{
 
-return(
+  loadMatches(){
+    fetch(matchesUrl,{
+      method: 'GET',
+      headers : {'Content-Type':'application/json'},
+    }).then((response) => response.json())
+    .then((responseData) =>{
+      console.log("Response  :"+responseData.status);
+      console.log("Total Teams  :"+responseData.data.length);
 
-  <ScrollView>
-  <View style={styles.container}>
-  <ListView
-  style={{flex:1}}
-  dataSource={this.state.dataSource}
-  renderRow={(data) => <RowMatch {...data} navigation={this.props.navigation}/>}
-                />
+      for (var i = 0; i < responseData.data.length; i++) {
+        matches.push(responseData.data[i]);
+      }
 
-  <Text style={{textAlign:'center'}}> group ID : {grpId}</Text>
-  <Text style={{textAlign:'center'}}> Showing matches for group : {grpName}</Text>
+      const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-  </View>
-  </ScrollView>
-);
-}
+      this.setState({
+        isLoading : false,
+        dataSource : ds.cloneWithRows(matches),
+      });
+    }).catch((err) =>{
+      console.log("Error All Matches : "+err);
+    });
+  }
+  componentDidMount(){
+    this.loadMatches();
+  }
+  componentWillUnmount(){
+    matches = [];
+    this.props.navigation.setParams({showPicker:this.showDatePicker});
+  }
+
+
+
+  render()
+  {
+    take = this;
+    if (this.state.isLoading) {
+      return (
+        <View style={{flex: 1, paddingTop: 20}}>
+        <ActivityIndicator />
+        </View>
+      );
+    }
+
+    return(
+      <ScrollView>
+      <View style={styles.container}>
+      <ListView
+      style={{flex:1}}
+      dataSource={this.state.dataSource}
+      renderRow={(data) => <RowMatch {...data} navigation={this.props.navigation}/>}
+      />
+
+      <Text style={{textAlign:'center'}}> group ID : {grpId}</Text>
+      <Text style={{textAlign:'center'}}> Showing matches for group : {grpName}</Text>
+      </View>
+      </ScrollView>
+    );
+  }
 }
 
 class App extends React.Component{
@@ -427,7 +635,128 @@ class App extends React.Component{
   }
 }
 
-var matchId = 0;
+class Points extends React.Component {
+  static navigationOptions = {
+    title: 'Points',
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading : true,
+      tableData : [],
+      refreshing: false,
+    }
+  }
+
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.loadData();
+    this.setState({refreshing: false});
+
+  }
+
+  loadData(){
+    var pointsTable = [{
+                "teamId": 0,
+                "teamName": "Country",
+                "played": 'P',
+                "won": 'W',
+                "lost": 'L',
+                "tie": 'T',
+                "noResult": 'NR',
+                "pts": 'PTS'
+            }]
+
+    fetch('http://10.0.1.125:8082/getPointsTable',{
+      method : 'GET',
+      headers :{'Content-Type':'application/json',},
+    }).then((response) => response.json())
+    .then((responseData) =>{
+      console.log("Response  :"+responseData.status);
+      console.log("Total Teams  :"+responseData.data.length);
+
+      for (var i = 0; i < responseData.data.length; i++) {
+        pointsTable.push(responseData.data[i]);
+      }
+
+      this.setState({
+        isLoading: false,
+        tableData: pointsTable,
+      });
+
+    }).catch((error) =>{
+      console.log('Error Points table : '+error);
+    });
+
+  }
+
+  componentDidMount(){
+    this.loadData();
+  }
+  componentWillUnmount(){
+    pointsTable = [];
+  }
+  renderTableView(item){
+
+    if (item.teamId === 0) {
+      return(
+      <View style = {styles.ptHeaderContainer}>
+      <Text style = {styles.ptHeaderColumn}>Team</Text>
+      <Text style = {styles.ptHeaderRow}>P</Text>
+      <Text style = {styles.ptHeaderRow}>W</Text>
+      <Text style = {styles.ptHeaderRow}>L</Text>
+      <Text style = {styles.ptHeaderRow}>T</Text>
+      <Text style = {styles.ptHeaderRow}>NR</Text>
+      <Text style = {styles.ptHeaderRow}>PTS</Text>
+      </View>
+    );
+
+    }else {
+      return(
+      <View style = {styles.ptRowContainer}>
+      <Text style = {styles.ptColumn}> {item.teamName} </Text>
+      <Text style = {styles.ptRow}> {item.played} </Text>
+      <Text style = {styles.ptRow}> {item.won} </Text>
+      <Text style = {styles.ptRow}> {item.lost} </Text>
+      <Text style = {styles.ptRow}> {item.tie} </Text>
+      <Text style = {styles.ptRow}> {item.noResult} </Text>
+      <Text style = {styles.ptRow}> {item.pts} </Text>
+      </View>
+    );
+  }
+
+  }
+
+  _keyExtractor = (item, index) => item.teamName;
+
+  render(){
+
+    if (this.state.isLoading) {
+      return (
+        <View style={{flex: 1, paddingTop: 20}}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+
+    return(
+      <View style={{padding:5,}}>
+      <FlatList
+      refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />}
+      data = {this.state.tableData}
+      keyExtractor={this._keyExtractor}
+      numColumns = {1}
+      renderItem = {({item}) => this.renderTableView(item)}
+      />
+      </View>
+    );
+
+  }
+}
 
 class Indicators extends React.Component{
   static navigationOptions = {
@@ -435,35 +764,72 @@ class Indicators extends React.Component{
   };
   constructor(props){
     super(props);
+    this.state={
+      tableData : [
+        {'name':'Player','op':'Vs','year':'Period','inns':'Inns','runs':'Runs','sr':'S/R','cen':'100s'},
+        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+      ]
+    }
 
-/*  const { params } = this.props.navigation.state;
-  const maId = params ? params.matchId : null;
-
-  matchId =  maId;
-*/
+  // const { params } = this.props.navigation.state;
+  // const maId = params ? params.matchId : null;
+  //
+  // matchId =  maId;
+  // console.log("matchId : "+matchId);
 
   }
 
-  render(){
-  var navigationView = (
-    <View style={{flex: 1, backgroundColor: '#ebeef0'}}>
+  renderTableView(item){
+    console.log("Index : "+item.name);
+    if (item.name === 'Player') {
+      return(
+      <View style = {{flexDirection:'row'}}>
+      <Text style = {styles.headerColumn}>{item.name}</Text>
+      <Text style = {styles.headerRow}>{item.op}</Text>
+      <Text style = {styles.headerRow}>{item.year}</Text>
+      <Text style = {styles.headerRow}>{item.inns}</Text>
+      <Text style = {styles.headerRow}>{item.runs}</Text>
+      <Text style = {styles.headerRow}>{item.sr}</Text>
+      <Text style = {styles.headerRow}>{item.cen}</Text>
+      </View>
+    );
+
+    }else {
+      return(
+      <View style = {{flexDirection:'row'}}>
+      <Text style = {styles.column}>{item.name}</Text>
+      <Text style = {styles.row}>{item.op}</Text>
+      <Text style = {styles.row}>{item.year}</Text>
+      <Text style = {styles.row}>{item.inns}</Text>
+      <Text style = {styles.row}>{item.runs}</Text>
+      <Text style = {styles.row}>{item.sr}</Text>
+      <Text style = {styles.row}>{item.cen}</Text>
+      </View>
+    );
+  }
+
+  }
+
+  _keyExtractor = (item, index) => item.name;
+
+  render()
+  {
+    var navigationView = (
+      <View style={{flex: 1, backgroundColor: '#ebeef0'}}>
       <Text style={{margin: 10, fontSize: 25, textAlign: 'left'}}>I am in the Drawer!</Text>
-    </View>
-  );
+      </View>
+    );
 
     const tableHead = ['Player','Against','Season','Innings','Runs','SR','100s'];
-    const tableData = [
-      ['Virat Kohli','SA','2017/18','6','588','99.46','3'],
-      ['Rohit Sharma','AUS','2013/14','6','491','108.62','2'],
-      ['George Bailey','IND','2013/14','6','478','116.06','1'],
-    ];
-
 
     return(
       <DrawerLayoutAndroid
       drawerWidth={300}
       drawerPosition={DrawerLayoutAndroid.positions.Left}
       renderNavigationView={() => navigationView}>
+
       <ScrollView>
       <View style={{flex:1,flexDirection:'column',padding:0}}>
       <View style={styles.cardView}>
@@ -483,63 +849,79 @@ class Indicators extends React.Component{
 
       <Text style={{paddingLeft:15,fontWeight:'bold',textAlign:'left',}}>Top three domination</Text>
 
-      <Text style={{padding:15,lineHeight:28,textAlign:'justify',fontFamily:'sans-serif-condensed'}}>             The series began with two of the best top three in the world pitted against each other - Rohit Sharma, Shikhar Dhawan and Virat Kohli against Hashim Amla, Quinton de Kock and Faf du Plessis. After two weeks and six ODIs, only one of them could stand up to the challenges while the other just capitulated. It did no good to the hosts when de Kock and du Plessis were ruled out after the first two ODIs with injuries. "Amla's" wretched run against India continued as he averaged only 25.66 in the series with a solitary fifty. His tally of 154 runs in the series was the highest for South Africa and that captured their "team's" woeful performance with the bat.
+      <Text style={{padding:15,lineHeight:28,textAlign:'justify',fontFamily:'sans-serif-condensed'}}>             The series began with two of the best top three in the world pitted against each other - Rohit Sharma, Shikhar Dhawan and Virat Kohli against Hashim Amla, Quinton de Kock and Faf du Plessis. After two weeks and six ODIs, only one of them could stand up to the challenges while the other just capitulated. It did no good to the hosts when de Kock and du Plessis were ruled out afte
+      first two ODIs with injuries. "Amla's" wretched run against India continued as he averaged only 25.66 in the series with a solitary fifty. His tally of 154 runs in the series was the highest for South Africa and that captured their "team's" woeful performance with the bat.
       </Text>
-
       <Text style={{padding:15,lineHeight:28,textAlign:'justify',fontFamily:'sans-serif-condensed'}}>             In comparison, there were hundreds from one of "India's" top three in five of the six innings missing out only in the second ODI where the target was only 119. The trio scored 76.33% of "India's" runs off the bat in the whole series making it the fourth highest contribution from the top three in a bilateral series of five or more ODIs. Out of the 17 times an Indian batsman went past 20, nine times they crossed 50, converting five of them to hundreds. On the other hand, the South African players could score fifty-plus only four out of the 27 times they went past 20. Aiden Markram was the prime example of failure to convert starts, reaching 20 four times in six innings but failed to go past 32.
       </Text>
 
       <Text style={{paddingLeft:15,fontWeight:'bold',textAlign:'left',}}>Kohli in a league of his own</Text>
-
       <Text style={{padding:15,lineHeight:28,textAlign:'justify',fontFamily:'sans-serif-condensed'}}>             Kohli started the series with a score to settle in South Africa as it was the only nation where he "hadn't" registered an ODI century. After the end of the series, he has the joint most hundreds by any player against the home team in South Africa, sitting alongside Kevin Pietersen with three each. He ended the series at a scarcely believable tally of 558 runs from six innings - the most ever by a player in a bilateral series of any length. Such was his dominance in the series that no bowler could dismiss him for a score less than 75.
-
-The gap between him and the rest was so much that only Dhawan (323 runs) managed to score more than one-third of "Kohli's" aggregate in the series. The top four leading run-getters for South Africa in the series managed only 511 runs between them, 47 less than "Kohli's" tally which underlines his rich vein of form. He also became the first Indian batsman to score three centuries in a bilateral series.
+      The gap between him and the rest was so much that only Dhawan (323 runs) managed to score more than one-third of "Kohli's" aggregate in the series. The top four leading run-getters for South Africa in the series managed only 511 runs between them, 47 less than "Kohli's" tally which underlines his rich vein of form. He also became the first Indian batsman to score three centuries in a bilateral series.
       </Text>
 
       <Text style={{paddingLeft:15,fontWeight:'bold',textAlign:'left',}}>Most runs in a bilateral series</Text>
 
       <View style={{justifyContent: 'center',alignItems: 'center',}}>
-  <Image source={{uri : 'https://i.ndtvimg.com/i/2017-09/virat-kohli-afp_806x605_61504455574.jpg'}}
-  style={{width:350,height:300,margin:25}} alt="Virat Kohli"
-  />
-  </View>
+      <Image source={{uri : 'https://i.ndtvimg.com/i/2017-09/virat-kohli-afp_806x605_61504455574.jpg'}}
+      style={{width:350,height:300,margin:25}} alt="Virat Kohli"
+      />
+      </View>
+      </View>
+      <View style={styles.tableContainer}>
+      <FlatList style={styles.table}
+      data = {this.state.tableData}
+      keyExtractor={this._keyExtractor}
+      numColumns = {1}
+      renderItem = {({item}) => this.renderTableView(item)}
+      />
+      </View>
 
-  </View>
-  </View>
+
+
+      </View>
       </View>
       </ScrollView>
-    </DrawerLayoutAndroid>
+
+      </DrawerLayoutAndroid>
     );
   }
 }
 
-
 const RootStack = StackNavigator(
-{
-  Home: {
-    screen : HomeScreen,
-  },
-  Matches:{
-    screen : GroupMatches,
-  },
-  Indicators : {
-    screen : Indicators,
-  },
-},
-{
-initialRouteName : 'Home',
-navigationOptions : {
-  headerStyle: {
-   backgroundColor: 'steelblue',
- },
- headerTintColor: 'white',
- headerTitleStyle: {
-   fontWeight: 'bold',
- },
-},
-}
+  {
+    Login :{
+      screen : Login,
+    },
+    SignUp :{
+      screen : SignUp,
+    },
+    Home: {
+      screen : HomeScreen,
+    },
+    Matches:{
+      screen : GroupMatches,
+    },
+    Indicators : {
+      screen : Indicators,
+    },
+    Points :{
+      screen : Points,
+    },
 
-);
+  },
+  {
+    initialRouteName : 'Login',
+    navigationOptions : {
+      headerStyle: {
+        backgroundColor: 'steelblue',
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
+  });
 
 const styles = StyleSheet.create({
   container: {
@@ -554,10 +936,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   horizontal: {
-   flexDirection: 'row',
-   justifyContent: 'space-around',
-   padding: 10
- },
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  },
   groupContainer: {
     flex: 1,
     margin: 5,
@@ -576,32 +958,35 @@ const styles = StyleSheet.create({
     padding: 8,
     color:"black",
     backgroundColor: 'powderblue',
+    fontFamily :'Roboto',
   },
   header: {
     textAlign: 'center',
     color: 'steelblue',
-    padding: 10,
+    padding: 8,
     fontWeight:'bold',
-    fontSize: 24,
+    fontSize: 20,
     backgroundColor:"skyblue",
+    fontFamily :'Roboto',
   },
   title: {
     paddingTop: 10,
     paddingBottom: 10,
     fontWeight: 'bold',
-    fontSize: 28,
+    fontSize: 22,
     color: 'white',
     textAlign: 'center',
+    fontFamily :'Roboto',
   },
   titleBar: {
-      backgroundColor: 'steelblue',
-      flex:1,
-      flexDirection: 'row',
-      maxHeight: 60,
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      paddingLeft: 20,
-      paddingRight: 20,
+    backgroundColor: 'steelblue',
+    flex:1,
+    flexDirection: 'row',
+    maxHeight: 60,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   cardView: {
     margin: 10,
@@ -614,27 +999,29 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cardTitle: {
-      textAlign: 'center',
-    fontSize : 25,
+    textAlign: 'center',
+    fontSize : 23,
     backgroundColor:'steelblue',
     color: 'white',
     fontWeight: 'bold',
     padding: 8,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
+    fontFamily :'Roboto',
   },
   cardText: {
     fontSize : 23,
     padding: 5,
     fontWeight:'600',
     textAlign: 'center',
-
+    fontFamily :'Roboto',
   },
   cardTextInfo: {
     padding:2,
     color:'steelblue',
     fontSize:13,
     alignSelf: 'center',
+    fontFamily :'Roboto',
   },
   imageMatchCard: {
     width:40,
@@ -643,20 +1030,111 @@ const styles = StyleSheet.create({
     marginRight:20
   },
   buttonContainer: {
-  margin: 24,
-},
-text: {
-  fontSize: 20,
-  color: '#fff',
-  textAlign: 'center',
-  fontWeight: 'bold',
-},
-button: {
-  padding: 20,
-  borderRadius: 5,
-  backgroundColor: 'steelblue',
-  marginBottom: 20,
-},
+    margin: 24,
+  },
+  text: {
+    fontSize: 20,
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily :'Roboto',
+  },
+  button: {
+    padding: 20,
+    borderRadius: 5,
+    backgroundColor: 'steelblue',
+    marginBottom: 20,
+  },
+  actionButton : {
+    backgroundColor :'steelblue',
+    marginRight:10,
+  },
+  actionText: {
+    textAlign :'center',
+    color :'white',
+    padding: 8,
+    fontWeight:'800',
+    fontSize:18,
+    fontFamily:'Roboto'
+  },
+  headerRow : {
+    textAlign : 'center',
+    fontSize:12,
+    backgroundColor:'steelblue',
+    color: 'white',
+    fontWeight:"500",
+    paddingLeft:6,
+    paddingRight:6,
+    paddingTop:3,
+    paddingBottom:3,
+  },
+  row :{
+    textAlign :'center',
+    fontSize:12,
+    paddingLeft:6,
+    paddingRight:6,
+    paddingTop:3,
+    paddingBottom:3,
+  },
+  headerColumn : {
+    textAlign : 'center',
+    width: 120,
+    fontSize:12,
+    backgroundColor:'steelblue',
+    color: 'white',
+    fontWeight:"500",
+    padding: 3,
+
+  },
+  column: {
+    textAlign :'center',
+    width: 120,
+    fontSize:12,
+    padding : 3,
+  },
+  tableContainer:{
+    alignItems : 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  table : {
+    borderRadius : 4,
+    borderWidth : 1,
+    borderColor : 'steelblue',
+  },
+  ptHeaderContainer :{
+    flexDirection:'row',
+    backgroundColor:'steelblue',
+    padding:5
+  },
+  ptRowContainer :{
+    flexDirection:'row',
+    padding:5,
+    borderLeftWidth:0.5,
+    borderRightWidth:0.5,
+    borderBottomWidth:0.4,
+    borderColor:'steelblue',
+  },
+  ptHeaderRow :{
+    marginRight:5,
+    textAlign:'center',
+    flex:0.3,
+    color:'white',
+    fontWeight:'bold',
+  },
+  ptRow :{
+    marginRight:5,
+    textAlign:'center',
+    flex:0.3,
+  },
+  ptHeaderColumn :{
+    flex:1,
+    color:'white',
+    fontWeight:'bold',
+  },
+  ptColumn :{
+    flex:1,
+  },
 });
 
-export default Indicators;
+export default App;
