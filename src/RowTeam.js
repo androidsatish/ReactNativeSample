@@ -2,14 +2,11 @@
 import { StyleSheet, Image, View, Text} from 'react-native';
 const RowTeam = (props) => (
 
-  //  <Text style={styles.item}>{props.title}</Text>
-
 <View style={styles.container}>
-<Image source={props.image} style={{width: 30, height: 20}}/>
-<Text style={styles.item}>{props.title}</Text>
+<Image source={{uri : props.img}} onError ={()=> console.log("Image loading failed")}
+ style={{width: 25, height: 15}}/>
+<Text style={styles.item}>{props.teamName}</Text>
 </View>
-
-//  <Image source={props.image} style={{width: 30, height: 20}}/>
 
 );
 
@@ -26,10 +23,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   item: {
-    fontSize: 19,
+    fontSize: 16,
     textAlign: 'center',
-    padding: 8,
+    padding: 6,
     color:"black",
+    fontFamily :'Roboto',
     backgroundColor: 'powderblue',
   },
 });
