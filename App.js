@@ -29,7 +29,7 @@ const toastStyle = {
 }
 
 const DATA_KEY = 'storage123'
-var message = 'Welcome to Toast Native ...!'
+var message = 'Welcome to React Toast Native ...!'
 var grpId,grpName
 var matchId = 0;
 const defaultHitSlop = { top: 15, bottom: 15, right: 15, left: 15 };
