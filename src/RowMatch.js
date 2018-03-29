@@ -98,10 +98,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   cardResultText :{
-    fontWeight:'400',
+    fontWeight:'600',
     padding:2,
-    color:'red',
-    fontSize:15,
+    color:'orange',
+    fontSize:17,
     alignSelf: 'center',
   },
   imageMatchCard: {
