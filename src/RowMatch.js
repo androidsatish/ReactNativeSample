@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   cardResultText :{
     fontWeight:'600',
     padding:2,
-    color:'red',
+    color:'orange',
     fontSize:17,
     alignSelf: 'center',
   },
