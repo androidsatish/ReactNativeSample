@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Platform,StyleSheet,Text,FlatList,ScrollView,Image,ListView,Button,TouchableWithoutFeedback,
   TouchableNativeFeedback,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
-  DrawerLayoutAndroid,ImageBackground,TextInput,} from 'react-native';
+  DrawerLayoutAndroid,ImageBackground,TextInput,ViewPagerAndroid,WebView,StatusBar,} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import RowTeam from './src/RowTeam';
 import RowMatch from './src/RowMatch';
@@ -133,6 +133,10 @@ class Login extends React.Component {
   render(){
     return(
       <View style = {styles.rootContainer}>
+      <StatusBar
+      backgroundColor="#104977"
+      barStyle="light-content"
+      />
       <ScrollView>
       <View style ={{padding:10,marginTop:20,}}>
       <TextInput style = {{padding:5,height:45,}}
@@ -506,11 +510,11 @@ class GroupMatches extends React.Component {
       </View>
       </TouchableNativeFeedback>
       <TouchableNativeFeedback
-      onPress={()=> {take.showDatePicker()}}
+      onPress={()=> {navigation.navigate('MoreSamples')}}
     background = {TouchableNativeFeedback.Ripple('white',false)}
     hitSlop = {defaultHitSlop}>
     <View style={styles.actionButton}>
-    <Text style={styles.actionText}> Time </Text>
+    <Text style={styles.actionText}> More </Text>
     </View>
     </TouchableNativeFeedback>
     </View>
@@ -888,6 +892,55 @@ class Indicators extends React.Component{
   }
 }
 
+class MoreSamples extends React.Component {
+  static navigationOptions = {
+    title: 'MoreSamples',
+  };
+  constructor(props) {
+    super(props);
+
+  }
+
+  render(){
+    return(
+      <ViewPagerAndroid style = {styles.viewPager}
+      onPageSelected = {(e) => console.log('Selected position : '+e.nativeEvent.position)}
+      initialPage={0}>
+      <View style = {styles.pageStyle} key = '1'>
+      <View style = {{flexDirection:'column',flex:1}}>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>React Native</Text>
+      <WebView
+      source = {{uri: 'https://github.com/facebook/react-native'}}
+      style = {{marginTop:10}}
+      onLoad = {()=> console.log("Loading finished")}
+      onError = {() => console.log('Load failed')}
+      onLoadEnd= {() => console.log('Loading ended')}
+      onLoadStart = {() => console.log('Loading starts')}
+      startInLoadingState = {true}
+      renderLoading = {() => {return(<ActivityIndicator color='#104977' size='large'
+        style = {{position:'absolute',top:0,bottom:0,left:0,right:0}}
+        />);}}
+      />
+      </View>
+      </View>
+      <View style = {styles.pageStyle} key = '2'>
+      <View style = {{flexDirection:'column',flex:1}}>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>Google</Text>
+      <WebView
+      source = {{uri: 'https://www.google.co.in/'}}
+      style = {{marginTop:10}}
+      startInLoadingState = {true}
+      renderLoading = {() => {return(<ActivityIndicator color='#104977' size='large'
+        style = {{position:'absolute',top:0,bottom:0,left:0,right:0}}
+        />);}}
+      />
+      </View>
+      </View>
+      </ViewPagerAndroid>
+    );
+  }
+}
+
 const RootStack = StackNavigator(
   {
     Login :{
@@ -907,6 +960,9 @@ const RootStack = StackNavigator(
     },
     Points :{
       screen : Points,
+    },
+    MoreSamples : {
+      screen : MoreSamples,
     },
 
   },
@@ -1134,6 +1190,12 @@ const styles = StyleSheet.create({
   },
   ptColumn :{
     flex:1,
+  },
+  viewPager: {
+    flex: 1
+  },
+  pageStyle: {
+    padding: 10,
   },
 });
 

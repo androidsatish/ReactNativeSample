@@ -12,7 +12,7 @@ class RowMatch extends React.Component {
     this.state = {
       isCompleted : this.props.isComplete,
     };
-    console.log("Row Match constructor called");
+  //  console.log("Row Match constructor called");
     if (this.props.isComplete) {
       date = this.props.result;
     }else {
