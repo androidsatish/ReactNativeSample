@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
   Platform,StyleSheet,Text,FlatList,ScrollView,Image,ListView,Button,TouchableWithoutFeedback,
-  TouchableNativeFeedback,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
-  DrawerLayoutAndroid,ImageBackground,TextInput,ViewPagerAndroid,WebView,StatusBar,} from 'react-native';
+  TouchableNativeFeedback,TouchableHighlight,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
+  DrawerLayoutAndroid,ImageBackground,TextInput,ViewPagerAndroid,WebView,StatusBar,CameraRoll,} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import RowTeam from './src/RowTeam';
 import RowMatch from './src/RowMatch';
@@ -867,9 +867,11 @@ class Indicators extends React.Component{
       <Text style={{paddingLeft:15,fontWeight:'bold',textAlign:'left',}}>Most runs in a bilateral series</Text>
 
       <View style={{justifyContent: 'center',alignItems: 'center',}}>
+      <TouchableHighlight onPress={() => {this.props.navigation.navigate('Gallery')}} >
       <Image source={{uri : 'https://i.ndtvimg.com/i/2017-09/virat-kohli-afp_806x605_61504455574.jpg'}}
       style={{width:350,height:300,margin:25}} alt="Virat Kohli"
       />
+      </TouchableHighlight>
       </View>
       </View>
       <View style={styles.tableContainer}>
@@ -892,13 +894,80 @@ class Indicators extends React.Component{
   }
 }
 
+class Gallery extends React.Component {
+  static navigationOptions = {
+    title: 'Gallery',
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      images : [],
+      selectedUri : '',
+      fetchParams : {first : 20,assetType: 'Photos'},
+    }
+
+  }
+  componentDidMount(){
+    CameraRoll.getPhotos(this.state.fetchParams)
+    .then( r =>{
+      this.setState({
+          images: r.edges,
+      });
+    })
+    .catch((err)=>{
+      console.log(err);
+    });
+  }
+
+  _CapturePhoto(){
+    // CameraRoll.saveToCameraRoll('file:///sdcard/img.png').catch((err) =>{
+    //   console.log(err);
+    // });
+  }
+
+  render(){
+    return(
+      <ScrollView style = {{flex:1}}>
+      <View style = {styles.imageGrid}>
+      {this.state.images.map((p,i) =>{
+        return(
+          <TouchableHighlight key ={i} >
+          <Image style = {styles.image} source = {{uri : p.node.image.uri}} />
+          </TouchableHighlight>
+        );
+      })}
+      </View>
+      <Button onPress={() => this._CapturePhoto()} title="Click Photo"></Button>
+      </ScrollView>
+    );
+  }
+}
+
 class MoreSamples extends React.Component {
   static navigationOptions = {
     title: 'MoreSamples',
   };
   constructor(props) {
     super(props);
+    this.state = {
+      time : new Date().toLocaleString(),
+      tick : 30,
+      tickText : 'Reamining Time : 30',
+    };
 
+  }
+  componentDidMount(){
+    setInterval(() =>{
+      this.setState({time : new Date().toLocaleString(),})
+      if (this.state.tick > 0) {
+        this.setState({
+          tick : this.state.tick - 1,
+          tickText: "Reamining Time : "+this.state.tick
+        })
+      }else {
+        this.setState({tickText: 'Time Completed'})
+      }
+    },1000);
   }
 
   render(){
@@ -909,6 +978,7 @@ class MoreSamples extends React.Component {
       <View style = {styles.pageStyle} key = '1'>
       <View style = {{flexDirection:'column',flex:1}}>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>React Native</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.time}</Text>
       <WebView
       source = {{uri: 'https://github.com/facebook/react-native'}}
       style = {{marginTop:10}}
@@ -925,6 +995,8 @@ class MoreSamples extends React.Component {
       <View style = {styles.pageStyle} key = '2'>
       <View style = {{flexDirection:'column',flex:1}}>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>Google</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.tickText}</Text>
+
       <WebView
       source = {{uri: 'https://www.google.co.in/'}}
       style = {{marginTop:10}}
@@ -962,6 +1034,9 @@ const RootStack = StackNavigator(
     },
     MoreSamples : {
       screen : MoreSamples,
+    },
+    Gallery : {
+      screen : Gallery,
     },
 
   },
@@ -1195,6 +1270,16 @@ const styles = StyleSheet.create({
   },
   pageStyle: {
     padding: 10,
+  },
+  imageGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center'
+  },
+  image: {
+      width: 100,
+      height: 100,
+      margin: 10,
   },
 });
 
