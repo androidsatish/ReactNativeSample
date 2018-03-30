@@ -914,7 +914,6 @@ class MoreSamples extends React.Component {
       style = {{marginTop:10}}
       onLoad = {()=> console.log("Loading finished")}
       onError = {() => console.log('Load failed')}
-      onLoadEnd= {() => console.log('Loading ended')}
       onLoadStart = {() => console.log('Loading starts')}
       startInLoadingState = {true}
       renderLoading = {() => {return(<ActivityIndicator color='#104977' size='large'
