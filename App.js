@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
   Platform,StyleSheet,Text,FlatList,ScrollView,Image,ListView,Button,TouchableWithoutFeedback,
-  TouchableNativeFeedback,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
-  DrawerLayoutAndroid,ImageBackground,TextInput,ViewPagerAndroid,WebView,StatusBar,} from 'react-native';
+  TouchableNativeFeedback,TouchableHighlight,View,ActivityIndicator,Alert,RefreshControl,AsyncStorage,DatePickerAndroid,
+  DrawerLayoutAndroid,ImageBackground,TextInput,ViewPagerAndroid,WebView,StatusBar,CameraRoll,} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import RowTeam from './src/RowTeam';
 import RowMatch from './src/RowMatch';
 import ActionButton from './src/ActionButton';
 import Toast from 'react-native-toast-native';
+import Camera from 'react-native-camera';
 
 var data1 = []
 
@@ -772,8 +773,8 @@ class Indicators extends React.Component{
       tableData : [
         {'name':'Player','op':'Vs','year':'Period','inns':'Inns','runs':'Runs','sr':'S/R','cen':'100s'},
         {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
-        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
-        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Rohit Sharma','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Shikhar Dhavan','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
       ]
     }
 
@@ -867,9 +868,11 @@ class Indicators extends React.Component{
       <Text style={{paddingLeft:15,fontWeight:'bold',textAlign:'left',}}>Most runs in a bilateral series</Text>
 
       <View style={{justifyContent: 'center',alignItems: 'center',}}>
+      <TouchableHighlight onPress={() => {this.props.navigation.navigate('Gallery')}} >
       <Image source={{uri : 'https://i.ndtvimg.com/i/2017-09/virat-kohli-afp_806x605_61504455574.jpg'}}
       style={{width:350,height:300,margin:25}} alt="Virat Kohli"
       />
+      </TouchableHighlight>
       </View>
       </View>
       <View style={styles.tableContainer}>
@@ -892,13 +895,108 @@ class Indicators extends React.Component{
   }
 }
 
+class Gallery extends React.Component {
+  static navigationOptions = {
+    title: 'Gallery',
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      images : [],
+      selectedUri : '',
+      fetchParams : {first : 20,assetType: 'Photos'},
+    }
+
+  }
+  componentDidMount(){
+    CameraRoll.getPhotos(this.state.fetchParams)
+    .then( r =>{
+      this.setState({
+          images: r.edges,
+      });
+    })
+    .catch((err)=>{
+      console.log(err);
+    });
+  }
+
+  _CapturePhoto(){
+    // CameraRoll.saveToCameraRoll('file:///sdcard/img.png').catch((err) =>{
+    //   console.log(err);
+    // });
+    console.log("Capture clicked");
+  }
+
+  render(){
+    return(
+      <ScrollView style = {{flex:1}}>
+      <View style = {styles.imageGrid}>
+      {this.state.images.map((p,i) =>{
+        return(
+          <TouchableHighlight key ={i} >
+          <Image style = {styles.image} source = {{uri : p.node.image.uri}} />
+          </TouchableHighlight>
+        );
+      })}
+      </View>
+      <Button onPress={() => this.props.navigation.navigate('CameraExample')} title="Click Photo"></Button>
+      </ScrollView>
+    );
+  }
+}
+
+class CameraExample extends React.Component {
+  static navigationOptions = {
+    title: 'CameraExample',
+  };
+
+  takePicture() {
+      const options = {};
+      this.camera.capture()
+      .then((data) => console.log(data))
+      .catch(err => console.error(err));
+   }
+  render(){
+    return(
+      <View style = {styles.container}>
+            <Camera
+               ref = {(cam) => {
+                  this.camera = cam;
+               }}
+               style = {styles.preview}
+               aspect = {Camera.constants.Aspect.fill}>
+            </Camera>
+            <Text style = {styles.capture} onPress = {this.takePicture}>CAPTURE</Text>
+         </View>
+    );
+  }
+}
+
 class MoreSamples extends React.Component {
   static navigationOptions = {
     title: 'MoreSamples',
   };
   constructor(props) {
     super(props);
+    this.state = {
+      time : new Date().toLocaleString(),
+      tick : 30,
+      tickText : 'Reamining Time : 30',
+    };
 
+  }
+  componentDidMount(){
+    setInterval(() =>{
+      this.setState({time : new Date().toLocaleString(),})
+      if (this.state.tick > 0) {
+        this.setState({
+          tick : this.state.tick - 1,
+          tickText: "Reamining Time : "+this.state.tick
+        })
+      }else {
+        this.setState({tickText: 'Time Completed'})
+      }
+    },1000);
   }
 
   render(){
@@ -909,6 +1007,7 @@ class MoreSamples extends React.Component {
       <View style = {styles.pageStyle} key = '1'>
       <View style = {{flexDirection:'column',flex:1}}>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>React Native</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.time}</Text>
       <WebView
       source = {{uri: 'https://github.com/facebook/react-native'}}
       style = {{marginTop:10}}
@@ -925,6 +1024,8 @@ class MoreSamples extends React.Component {
       <View style = {styles.pageStyle} key = '2'>
       <View style = {{flexDirection:'column',flex:1}}>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>Google</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.tickText}</Text>
+
       <WebView
       source = {{uri: 'https://www.google.co.in/'}}
       style = {{marginTop:10}}
@@ -962,6 +1063,12 @@ const RootStack = StackNavigator(
     },
     MoreSamples : {
       screen : MoreSamples,
+    },
+    Gallery : {
+      screen : Gallery,
+    },
+    CameraExample : {
+      screen : CameraExample,
     },
 
   },
@@ -1196,6 +1303,26 @@ const styles = StyleSheet.create({
   pageStyle: {
     padding: 10,
   },
+  imageGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center'
+  },
+  image: {
+      width: 100,
+      height: 100,
+      margin: 10,
+  },
+  preview: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center'
+   },
+   capture: {
+      fontSize: 30,
+      color: 'red',
+      alignSelf: 'center',
+   },
 });
 
 export default App;
