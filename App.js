@@ -8,6 +8,7 @@ import RowTeam from './src/RowTeam';
 import RowMatch from './src/RowMatch';
 import ActionButton from './src/ActionButton';
 import Toast from 'react-native-toast-native';
+import Camera from 'react-native-camera';
 
 var data1 = []
 
@@ -772,8 +773,8 @@ class Indicators extends React.Component{
       tableData : [
         {'name':'Player','op':'Vs','year':'Period','inns':'Inns','runs':'Runs','sr':'S/R','cen':'100s'},
         {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
-        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
-        {'name':'Virat Kohli','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Rohit Sharma','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
+        {'name':'Shikhar Dhavan','op':'SA','year':'2017-2018','inns':'6','runs':'588','sr':'99.46','cen':'3'},
       ]
     }
 
@@ -923,6 +924,7 @@ class Gallery extends React.Component {
     // CameraRoll.saveToCameraRoll('file:///sdcard/img.png').catch((err) =>{
     //   console.log(err);
     // });
+    console.log("Capture clicked");
   }
 
   render(){
@@ -937,8 +939,35 @@ class Gallery extends React.Component {
         );
       })}
       </View>
-      <Button onPress={() => this._CapturePhoto()} title="Click Photo"></Button>
+      <Button onPress={() => this.props.navigation.navigate('CameraExample')} title="Click Photo"></Button>
       </ScrollView>
+    );
+  }
+}
+
+class CameraExample extends React.Component {
+  static navigationOptions = {
+    title: 'CameraExample',
+  };
+
+  takePicture() {
+      const options = {};
+      this.camera.capture()
+      .then((data) => console.log(data))
+      .catch(err => console.error(err));
+   }
+  render(){
+    return(
+      <View style = {styles.container}>
+            <Camera
+               ref = {(cam) => {
+                  this.camera = cam;
+               }}
+               style = {styles.preview}
+               aspect = {Camera.constants.Aspect.fill}>
+            </Camera>
+            <Text style = {styles.capture} onPress = {this.takePicture}>CAPTURE</Text>
+         </View>
     );
   }
 }
@@ -1037,6 +1066,9 @@ const RootStack = StackNavigator(
     },
     Gallery : {
       screen : Gallery,
+    },
+    CameraExample : {
+      screen : CameraExample,
     },
 
   },
@@ -1281,6 +1313,16 @@ const styles = StyleSheet.create({
       height: 100,
       margin: 10,
   },
+  preview: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignItems: 'center'
+   },
+   capture: {
+      fontSize: 30,
+      color: 'red',
+      alignSelf: 'center',
+   },
 });
 
 export default App;
