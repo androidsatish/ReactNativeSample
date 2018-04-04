@@ -310,6 +310,7 @@ class HomeScreen extends React.Component{
   static navigationOptions = {
     headerTitle: <LogoTitle />,
   };
+  watchId: ?number = null;
   constructor(props){
     super(props);
 
@@ -327,6 +328,10 @@ class HomeScreen extends React.Component{
     dataSource2: ds.cloneWithRows(data2),
     dataSource3: ds.cloneWithRows(data3),
     dataSource4: ds.cloneWithRows(data4),
+    initialPosition:'{}',
+    lastPosition : '{}',
+    locationChanged : false,
+    initialChanged : false,
   };
 
   }
@@ -373,9 +378,41 @@ class HomeScreen extends React.Component{
    });
 
  }
+ getLocation(){
+   navigator.geolocation.getCurrentPosition((position) =>{
+     const initialPos = JSON.stringify(position);
+     this.setState({initialPosition:initialPos,initialChanged:true});
+     console.log("Initial : "+initialPos);
+   },(err) => {
+     console.log("Location Error "+err.message);
+   },{
+     enableHighAccuracy: false, timeout:20000,maximumAge:1000
+   });
 
+   this.watchId = navigator.geolocation.watchPosition((position) =>{
+     const lastPos = JSON.stringify(position);
+     this.setState({lastPosition:lastPos,locationChanged:true});
+     console.log("Last location: "+JSON.parse(lastPos)['coords']['latitude']);
+   });
+
+ }
+ getParsedLastLocation(location){
+   if (this.state.locationChanged) {
+     return JSON.parse(location)['coords']['latitude']+","+JSON.parse(location)['coords']['longitude'];
+   }else {
+     return "No Location Available";
+   }
+ }
+ getParsedInitialLocation(location){
+   if (this.state.initialChanged) {
+     return JSON.parse(location)['coords']['latitude']+","+JSON.parse(location)['coords']['longitude'];
+   }else {
+     return "No Location Available";
+   }
+ }
  componentDidMount(){
    this.loadData();
+   this.getLocation();
  }
 
  componentWillUnmount(){
@@ -383,6 +420,7 @@ class HomeScreen extends React.Component{
    data2 = [];
    data3 = [];
    data4 = [];
+   navigator.geolocation.clearWatch(this.watchId);
  }
 
   render(){
@@ -490,6 +528,9 @@ class HomeScreen extends React.Component{
             </View>
             </TouchableNativeFeedback>
             </View>
+
+            <Text style={{textAlign:'center',padding:10,color:'#ff0000'}}>Initial Position : {this.getParsedInitialLocation(this.state.initialPosition)} </Text>
+            <Text style={{textAlign:'center',padding:10,color:'#0000ff'}}>Last Position : {this.getParsedLastLocation(this.state.lastPosition)} </Text>
 
               </View>
               </ScrollView>
