@@ -33,6 +33,10 @@ const DATA_KEY = 'storage123'
 var message = 'Welcome to Toast Native ...!'
 var grpId,grpName
 var matchId = 0;
+var take
+var imageUri
+var imageArray
+var pos
 const defaultHitSlop = { top: 15, bottom: 15, right: 15, left: 15 };
 
 class LogoTitle extends React.Component {
@@ -494,7 +498,7 @@ class HomeScreen extends React.Component{
             );
           }
         }
-var take
+
 class GroupMatches extends React.Component {
 
   static navigationOptions = ({navigation}) => {
@@ -908,6 +912,7 @@ class Gallery extends React.Component {
     }
 
   }
+
   componentDidMount(){
     CameraRoll.getPhotos(this.state.fetchParams)
     .then( r =>{
@@ -920,21 +925,21 @@ class Gallery extends React.Component {
     });
   }
 
-  _CapturePhoto(){
-    // CameraRoll.saveToCameraRoll('file:///sdcard/img.png').catch((err) =>{
-    //   console.log(err);
-    // });
-    console.log("Capture clicked");
-  }
-
   render(){
     return(
       <ScrollView style = {{flex:1}}>
       <View style = {styles.imageGrid}>
       {this.state.images.map((p,i) =>{
         return(
-          <TouchableHighlight key ={i} >
-          <Image style = {styles.image} source = {{uri : p.node.image.uri}} />
+          <TouchableHighlight key ={i} onPress = {() => {this.props.navigation.navigate('ImagePreview',{
+              imageUri : p.node.image.uri,
+              pos:i,
+              imageArray : this.state.images,
+          });}
+        } >
+
+          <Image style = {styles.image} source = {{uri : p.node.image.uri}}
+           />
           </TouchableHighlight>
         );
       })}
@@ -964,9 +969,10 @@ class CameraExample extends React.Component {
                   this.camera = cam;
                }}
                style = {styles.preview}
+               type = {Camera.constants.Type.front}
                aspect = {Camera.constants.Aspect.fill}>
             </Camera>
-            <Text style = {styles.capture} onPress = {this.takePicture}>CAPTURE</Text>
+            <Text style = {styles.capture} onPress = {this.takePicture.bind(this)}>CAPTURE</Text>
          </View>
     );
   }
@@ -982,6 +988,7 @@ class MoreSamples extends React.Component {
       time : new Date().toLocaleString(),
       tick : 30,
       tickText : 'Reamining Time : 30',
+      pageNumber:0,
     };
 
   }
@@ -999,14 +1006,21 @@ class MoreSamples extends React.Component {
     },1000);
   }
 
+  pageChanged(page){
+    this.setState({
+      pageNumber : page,
+    });
+  }
+
   render(){
     return(
       <ViewPagerAndroid style = {styles.viewPager}
-      onPageSelected = {(e) => console.log('Selected position : '+e.nativeEvent.position)}
+      onPageSelected = {(e) =>
+      {this.pageChanged(e.nativeEvent.position);}}
       initialPage={0}>
       <View style = {styles.pageStyle} key = '1'>
       <View style = {{flexDirection:'column',flex:1}}>
-      <Text style = {{textAlign:'center',fontWeight:'bold'}}>React Native</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>React Native {this.state.pageNumber}</Text>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.time}</Text>
       <WebView
       source = {{uri: 'https://github.com/facebook/react-native'}}
@@ -1023,7 +1037,7 @@ class MoreSamples extends React.Component {
       </View>
       <View style = {styles.pageStyle} key = '2'>
       <View style = {{flexDirection:'column',flex:1}}>
-      <Text style = {{textAlign:'center',fontWeight:'bold'}}>Google</Text>
+      <Text style = {{textAlign:'center',fontWeight:'bold'}}>Google {this.state.pageNumber}</Text>
       <Text style = {{textAlign:'center',fontWeight:'bold'}}>{this.state.tickText}</Text>
 
       <WebView
@@ -1036,6 +1050,43 @@ class MoreSamples extends React.Component {
       />
       </View>
       </View>
+      </ViewPagerAndroid>
+    );
+  }
+}
+
+class ImagePreview extends React.Component {
+  static navigationOptions = {
+    title: 'ImagePreview',
+    header:null,
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      pageNumber:0,
+    };
+
+    const { params } = this.props.navigation.state;
+     imageUri = params ? params.imageUri : null;
+     pos = params ? params.pos:0;
+     imageArray = params ? params.imageArray : null;
+    console.log('Image pos :'+pos);
+    console.log('Image array :'+imageArray.length);
+  }
+  render(){
+    return(
+      <ViewPagerAndroid style={styles.viewPager}
+      onPageSelected = {(e) => console.log("selected page :"+e.nativeEvent.position)}
+      initialPage={pos}
+      >
+      {imageArray.map((p,i)=>{
+        return(
+          <View style= {{flex:1}} key = {i} >
+          <Image style= {{flex:1}}source={{uri : p.node.image.uri}}/>
+          </View>
+        );
+      })}
+
       </ViewPagerAndroid>
     );
   }
@@ -1069,6 +1120,9 @@ const RootStack = StackNavigator(
     },
     CameraExample : {
       screen : CameraExample,
+    },
+    ImagePreview : {
+      screen : ImagePreview,
     },
 
   },
@@ -1309,9 +1363,10 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
   },
   image: {
-      width: 100,
-      height: 100,
+      width: 150,
+      height: 150,
       margin: 10,
+      borderRadius:4,
   },
   preview: {
       flex: 1,
